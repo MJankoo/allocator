@@ -1,0 +1,18 @@
+name: GitHub Actions Allocator
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+    build:
+      strategy:
+        fail-fast: false
+        matrix:
+          compiler: [gcc, clang]
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v3
+      - name: build
+        env:
+          CC: ${​​​​​​​​​{​​​​​​​​​ matrix.compiler }​​​​​​​​​}​​​​​​​​​
+        run: |
+          make config
+          make test
