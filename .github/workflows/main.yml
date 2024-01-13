@@ -14,4 +14,4 @@ jobs:
         env:
           CC: ${{ matrix.compiler }}​​​​​​​​​
         run: |
-          make test
+          make tests
