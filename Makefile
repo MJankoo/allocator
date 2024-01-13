@@ -1,6 +1,9 @@
 build:
 	gcc allocator.c main.c -ggdb3 -o allocator.o
 	
+config:
+	./install_env.sh		
+	
 tests:
 	@gcc allocator.c tests/assert.c tests/alloc_test.c tests/main.c -o tests.sh && ./tests.sh
 	@rm -rf tests.sh
