@@ -52,9 +52,24 @@ void printUnfreed() {
 	}
 }
 
+void printFaultyBlocks() {
+	struct Header* block = firstBlock;
+	int counterFaulty = 0;
+	int counter = 0;
+	while(block != NULL) {
+		if (block->magic != MAGIC) {
+			counterFaulty++;
+		}
+		counter++;
+		block = block->next;
+	}
+	printf("There are %d/%d broken blocks.\n", counterFaulty, counter);
+}
+
 void printStats() {
 	printf("Allocation counter: %d\n", allocStats.allocCounter);
 	printf("Allocated bytes: %d\n", allocStats.allocatedBytes);
+	printf("Avarage allocated bytes: %d\n", allocStats.allocatedBytes/allocStats.allocCounter);
 	printf("OS memory requests: %d\n", allocStats.sbrkCallCounter);
 }
 
@@ -175,7 +190,9 @@ void* allocate(size_t size, const char* file, int line) {
 	pthread_mutex_lock(&lock);
 
 	if (!atexitSet && !isTestMode()) {
-		atexitSet = atexit(printUnfreed);
+		atexitSet = 1;
+		atexit(printFaultyBlocks); // NOLINT
+		atexit(printUnfreed); // NOLINT
 	}
 
 	allocStats.allocCounter++;

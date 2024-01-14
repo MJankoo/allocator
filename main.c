@@ -5,6 +5,7 @@
 int main() {
 	int* tab = alloc(10);
 	int* tab1 = alloc(10);
+	int* tab2 = alloc(10);
 	
 	free(tab);
 
