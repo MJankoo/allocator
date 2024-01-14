@@ -42,6 +42,8 @@ void test_system_mark_block_as_free() {
 	intTabHeader->used = 1;
 }
 
+
+
 void test_system_split_blocks() {
 	int *tab = alloc(sizeof(int) * 30);
 	free(tab);
@@ -63,12 +65,30 @@ void test_system_combine_blocks() {
 	assertSameInt(blockHeader->size, 32 + sizeof(struct Header));
 }
 
+static int signalNumber = -1;
+void signal_handler(int sig_num) {
+	signalNumber = sig_num;
+}
+
+void test_system_throws_segmentation_fault() {
+	signal(SIGSEGV, signal_handler);
+
+	int *block = alloc(sizeof(int));
+	int *block2 = alloc(sizeof(int) * 30);
+	
+	block[2] = 10;
+	
+	free(block2);
+	assertSameInt(signalNumber, 11);
+}
+
 void run_alloc_test() {
 	runTest(&test_system_split_blocks, &testStatus);
 	runTest(&test_system_allocates_at_least_request_size, &testStatus);
 	runTest(&test_system_mark_block_as_free, &testStatus);
 	runTest(&test_system_adds_header_size_and_alignment_to_requested_size, &testStatus);
 	runTest(&test_system_combine_blocks, &testStatus);
+	runTest(&test_system_throws_segmentation_fault, &testStatus);
 	
 	finishTests(&testStatus);
 }

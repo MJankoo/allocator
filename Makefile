@@ -1,12 +1,21 @@
 build:
 	gcc allocator.c main.c -ggdb3 -o allocator.o
 	
+build-static:
+	gcc main.c -I./build -L./build -Wl,-rpath=./build -l:allocator.so -o app	
+
+install:
+	./install_lib.sh $(location)
+	
 config:
 	./install_env.sh		
 	
 tests:
 	@gcc allocator.c tests/assert.c tests/alloc_test.c tests/main.c -o tests.sh && ./tests.sh
 	@rm -rf tests.sh
+	
+e2e:
+	gcc allocator.c tests/e2e/allocationSegFaultScenario.c tests/e2e/allocationSegFaultTest.c 
 	
 test-coverage:
 	@gcc allocator.c tests/assert.c tests/alloc_test.c tests/main.c -ftest-coverage -fprofile-arcs -o test-cov.o

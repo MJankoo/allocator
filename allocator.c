@@ -79,7 +79,7 @@ struct Header* findBlock(size_t size) {
   	}
   	
   	if (header->magic != MAGIC) {
-  		raise(SIGSEGV);
+  		raise(SIGSEGV); // NOLINT
   	}
   	return header;
 }
@@ -196,7 +196,7 @@ void* allocate(size_t size, const char* file, int line) {
 void my_free(void* ptr) {
 	struct Header* blockHeader = getHeader(ptr);
 	if (blockHeader->magic != MAGIC) {
-  		//raise(SIGSEGV);
+  		raise(SIGSEGV); // NOLINT
   	}
 	
 	blockHeader = combine(blockHeader);
