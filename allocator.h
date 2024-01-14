@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <limits.h>
+#include <signal.h>
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #define alloc(a) allocate(a, __FILENAME__, __LINE__)

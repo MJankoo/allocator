@@ -73,7 +73,15 @@ struct Header* firstFit(size_t size) {
 }
 
 struct Header* findBlock(size_t size) {
-  	return firstFit(size);
+  	struct Header* header = firstFit(size);
+  	if (header == NULL) {
+  		return NULL;
+  	}
+  	
+  	if (header->magic != MAGIC) {
+  		raise(SIGSEGV);
+  	}
+  	return header;
 }
 
 size_t align(size_t size) {
@@ -117,7 +125,8 @@ struct Header* split(struct Header* block, size_t size) {
 	struct Header* next = block->next;
 	block->next = (struct Header*) ((char*) block + sizeof(struct Header) + size);
 	block->next->used = false;
-	block->next->size = size - sizeof(struct Header);
+	block->next->magic = MAGIC;
+	block->next->size = block->size - sizeof(struct Header);
 	block->next->next = next;
 	return block;
 }
@@ -186,6 +195,10 @@ void* allocate(size_t size, const char* file, int line) {
 
 void my_free(void* ptr) {
 	struct Header* blockHeader = getHeader(ptr);
+	if (blockHeader->magic != MAGIC) {
+  		//raise(SIGSEGV);
+  	}
+	
 	blockHeader = combine(blockHeader);
 	blockHeader->used = false;
 }
